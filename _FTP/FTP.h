@@ -24,11 +24,12 @@ Named by µ¿ÈÆ, ÅÂ±Õ
 #define CHECK std::cout<< "CHECK" << std::endl;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam);
-
+void conv(std::vector<std::vector<std::string> >  text, std::string __str, wchar_t*& buf, int& size);
 void conv(std::vector<std::vector<std::string> >  text, wchar_t*& buf, int& size);
 void conv(std::string text, wchar_t*& buf, int& size);
 void conv(const char* text, wchar_t*& buf, int& size);
 
+void _TextOut(HDC hdc, std::vector<std::vector<std::string> >  text, std::string _str);
 void _TextOut(HDC hdc, std::vector<std::vector<std::string> >  text);
 void _TextOut(HDC hdc, std::string  text);
 void _TextOut(HDC hdc, const char* text);

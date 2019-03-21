@@ -5,6 +5,19 @@ void Excute(std::vector<std::vector<std::string> > _str) {
 
 }
 
+void _TextOut(HDC hdc, std::vector<std::vector<std::string> >  text, std::string _str)    //print text
+{
+	if (text[line].size() == 0)
+	{
+		return;
+	}
+	int i = 0;
+	wchar_t* buf;
+	conv(text, _str, buf, i);
+	TextOut(hdc, 0, 15, buf, i);
+	delete[]buf;
+}
+
 void _TextOut(HDC hdc, std::vector<std::vector<std::string> >  text)    //print text
 {
 	if (text[line].size() == 0)
@@ -45,6 +58,13 @@ void _TextOut(HDC hdc, const char* text)    //print text
 	delete[]buf;
 }
 
+void conv(std::vector<std::vector<std::string> >  text,std::string __str, wchar_t*& buf, int& size) {
+	std::string _str = std::accumulate(text[line].begin(), text[line].end(), std::string(""));
+	_str.insert(0, __str.c_str());
+	buf = new wchar_t[_str.size()];
+	mbstowcs(buf, _str.c_str(), _str.size());
+	size = _str.size();
+}
 
 void conv(std::vector<std::vector<std::string> >  text, wchar_t*& buf, int& size) {
 	std::string _str = std::accumulate(text[line].begin(), text[line].end(), std::string(""));

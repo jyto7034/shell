@@ -45,7 +45,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 		freopen("CONOUT$", "wb", stdout);
 		CurrentLocation = "C:\\";
 		index = 0;
-		_TextOut(hdc, CurrentLocation);
 		break;
 	}
 
@@ -91,7 +90,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 		hdc = BeginPaint(hWnd, &ps);
 		SetTextColor(hdc, RGB(255, 255, 255));
 		SetBkColor(hdc, TRANSPARENT);
-		_TextOut(hdc, str);
+		_TextOut(hdc, str, CurrentLocation);
 		cr.Update(str, index);
 		EndPaint(hWnd, &ps);
 		break;
