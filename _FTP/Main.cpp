@@ -50,7 +50,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 
 	case WM_KEYDOWN:
 	{
-		if (wParam == VK_LEFT && index != 0) {
+		if (wParam == VK_LEFT) {
 			index -= 1;
 			//std::cout << index << std::endl;
 		}
@@ -78,8 +78,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			char temp = wParam;
 			std::string s; s.push_back(temp);
 			str[line].push_back(s);
-			index += 1;
 			//std::cout << index << std::endl;
+			index++;
 		}
 		InvalidateRect(hWnd, NULL, TRUE);
 		break;
@@ -91,7 +91,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 		SetTextColor(hdc, RGB(255, 255, 255));
 		SetBkColor(hdc, TRANSPARENT);
 		_TextOut(hdc, str, CurrentLocation);
-		cr.Update(str, index);
+		cr.Update(str, CurrentLocation, index);
 		EndPaint(hWnd, &ps);
 		break;
 	}

@@ -5,15 +5,15 @@ void Excute(std::vector<std::vector<std::string> > _str) {
 
 }
 
-void _TextOut(HDC hdc, std::vector<std::vector<std::string> >  text, std::string _str)    //print text
+void _TextOut(HDC hdc, std::vector<std::vector<std::string> >  text, std::string loc)    //print text
 {
 	if (text[line].size() == 0)
 	{
 		return;
 	}
-	int i = 0;
 	wchar_t* buf;
-	conv(text, _str, buf, i);
+	int i = 0;
+	conv(text, loc, buf, i);
 	TextOut(hdc, 0, 15, buf, i);
 	delete[]buf;
 }
@@ -31,13 +31,14 @@ void _TextOut(HDC hdc, std::vector<std::vector<std::string> >  text)    //print 
 	delete[]buf;
 }
 
+
+
 void _TextOut(HDC hdc, std::string  text)    //print text
 {
 	if (text.size() == 0)
 	{
 		return;
 	}
-	CHECK;
 	int i = 0;
 	wchar_t* buf;
 	conv(text, buf, i);
@@ -58,12 +59,25 @@ void _TextOut(HDC hdc, const char* text)    //print text
 	delete[]buf;
 }
 
-void conv(std::vector<std::vector<std::string> >  text,std::string __str, wchar_t*& buf, int& size) {
+void conv(std::vector<std::vector<std::string> >  text,std::string __str, wchar_t*& buf, int& size, std::string& cpy) {
 	std::string _str = std::accumulate(text[line].begin(), text[line].end(), std::string(""));
+	_str.insert(0, ">");
 	_str.insert(0, __str.c_str());
 	buf = new wchar_t[_str.size()];
 	mbstowcs(buf, _str.c_str(), _str.size());
 	size = _str.size();
+	cpy = _str;
+	std::cout << _str.c_str() << std::endl;
+}
+
+void conv(std::vector<std::vector<std::string> >  text, std::string __str, wchar_t*& buf, int& size) {
+	std::string _str = std::accumulate(text[line].begin(), text[line].end(), std::string(""));
+	_str.insert(0, ">");
+	_str.insert(0, __str.c_str());
+	buf = new wchar_t[_str.size()];
+	mbstowcs(buf, _str.c_str(), _str.size());
+	size = _str.size();
+	std::cout << _str.c_str() << std::endl;
 }
 
 void conv(std::vector<std::vector<std::string> >  text, wchar_t*& buf, int& size) {
@@ -102,15 +116,28 @@ void WCharToChar(const wchar_t* pwstrSrc, char pstrDest[])	// LPCWSTR to char
 Caret::Caret() {}
 
 
-void Caret::Update(std::vector<std::vector<std::string> >  text, int _index)
+void Caret::Update(std::vector<std::vector<std::string> >  text, std::string loc, int  _index)
 {
 	if (str.size() > 0)
 	{
-		int i = 0;
 		wchar_t* buf;
-		conv(text, buf, i);
-		GetTextExtentPoint(hdc, buf, i, &size);
-		SetCaretPos(size.cx - ((i - _index) * 8), size.cy);
+		int i;
+		std::string cpy, temp;
+		conv(text, loc, buf, i, cpy);
+		for (int i = 0; i  < _index + CurrentLocation.length() + 1; i ++)
+		{
+			temp.push_back(cpy.at(i));
+		}
+		std::cout << " : " <<temp.c_str() << std::endl;
+		GetTextExtentPoint(hdc, buf, i, &size);	
+		if (_index != 0) {
+			CHECK;
+			SetCaretPos((size.cx), size.cy);
+			//std::cout << fo[_index - 1] << " : " << size.cx << " : "  << fo.size()<< std::endl;
+		}
+		else
+			SetCaretPos(size.cx, size.cy);
+		delete[] buf;
 	}
 }
 

@@ -24,6 +24,7 @@ Named by µ¿ÈÆ, ÅÂ±Õ
 #define CHECK std::cout<< "CHECK" << std::endl;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam);
+void conv(std::vector<std::vector<std::string> >  text, std::string __str, wchar_t*& buf, int& size, std::string& cpy);
 void conv(std::vector<std::vector<std::string> >  text, std::string __str, wchar_t*& buf, int& size);
 void conv(std::vector<std::vector<std::string> >  text, wchar_t*& buf, int& size);
 void conv(std::string text, wchar_t*& buf, int& size);
@@ -65,5 +66,5 @@ public:
 	Caret();
 	Caret(HDC _hdc) : hdc(_hdc) { };
 	HDC hdc;
-	void Update(std::vector<std::vector<std::string> >  text, int _index);
+	void Update(std::vector<std::vector<std::string> >  text, std::string str, int _index);
 };
