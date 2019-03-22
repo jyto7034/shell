@@ -67,7 +67,7 @@ void conv(std::vector<std::vector<std::string> >  text,std::string __str, wchar_
 	mbstowcs(buf, _str.c_str(), _str.size());
 	size = _str.size();
 	cpy = _str;
-	std::cout << _str.c_str() << std::endl;
+	//std::cout << _str.c_str() << std::endl;
 }
 
 void conv(std::vector<std::vector<std::string> >  text, std::string __str, wchar_t*& buf, int& size) {
@@ -124,14 +124,13 @@ void Caret::Update(std::vector<std::vector<std::string> >  text, std::string loc
 		int i;
 		std::string cpy, temp;
 		conv(text, loc, buf, i, cpy);
-		for (int i = 0; i  < _index + CurrentLocation.length() + 1; i ++)
+		for (int i = 0; i  < _index + loc.size() + 1; i ++)
 		{
 			temp.push_back(cpy.at(i));
 		}
-		std::cout << " : " <<temp.c_str() << std::endl;
+		conv(temp, buf, i);
 		GetTextExtentPoint(hdc, buf, i, &size);	
 		if (_index != 0) {
-			CHECK;
 			SetCaretPos((size.cx), size.cy);
 			//std::cout << fo[_index - 1] << " : " << size.cx << " : "  << fo.size()<< std::endl;
 		}
