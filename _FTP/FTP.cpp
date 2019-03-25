@@ -1,8 +1,19 @@
 #pragma once
 #include "FTP.h"
 
-void Excute(std::vector<std::vector<std::string> > _str) {
+void Excute(std::vector<std::vector<std::string> > text) {
+	std::string _str = std::accumulate(text[line].begin(), text[line].end(), std::string(""));
+	std::cout << _str.c_str() << std::endl;
+	std::stringstream ss(_str);
 
+	std::vector<std::string> _cmd;
+	copy(std::istream_iterator<std::string>(ss),
+		std::istream_iterator<std::string>(),
+		back_inserter(_cmd));
+	
+	if (_cmd[0].compare("cd") == 0 && _cmd[1].empty())
+		/*cd(_cmd[1]);*/
+		std::cout << "Suc" << std::endl;
 }
 
 void _TextOut(HDC hdc, std::vector<std::vector<std::string> >  text, std::string loc)    //print text
@@ -30,8 +41,6 @@ void _TextOut(HDC hdc, std::vector<std::vector<std::string> >  text)    //print 
 	TextOut(hdc, 0, 15, buf, i);
 	delete[]buf;
 }
-
-
 
 void _TextOut(HDC hdc, std::string  text)    //print text
 {
@@ -77,7 +86,7 @@ void conv(std::vector<std::vector<std::string> >  text, std::string __str, wchar
 	buf = new wchar_t[_str.size()];
 	mbstowcs(buf, _str.c_str(), _str.size());
 	size = _str.size();
-	std::cout << _str.c_str() << std::endl;
+	//std::cout << _str.c_str() << std::endl;
 }
 
 void conv(std::vector<std::vector<std::string> >  text, wchar_t*& buf, int& size) {
@@ -99,7 +108,7 @@ void conv(const char* text, wchar_t*& buf, int& size) {
 	size = sizeof(text);
 }
 
-void CharToWChar(const char* pstrSrc, wchar_t pwstrDest[])	// char to LPCWSTR
+void CharToWChar(const char* pstrSrc, wchar_t pwstrDest[])
 {
 	int nLen = (int)strlen(pstrSrc) + 1;
 	mbstowcs(pwstrDest, pstrSrc, nLen);
@@ -236,4 +245,80 @@ int isFileOrDir(char *s)
 	_findclose(hFile);
 
 	return result;
+}
+
+HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow, HWND& _g_hWnd) {
+	WNDCLASS wc;
+	wc.style = CS_OWNDC;
+	wc.lpfnWndProc = WndProc;
+	wc.cbClsExtra = 0;
+	wc.cbWndExtra = 0;
+	wc.hInstance = hInstance;
+	wc.hIcon = LoadIcon(NULL, IDC_ICON);
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.hbrBackground = reinterpret_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
+	wc.lpszMenuName = NULL;
+	wc.lpszClassName = TEXT("MyApp");
+
+	RegisterClass(&wc);
+	g_hInst = hInstance;
+	_g_hWnd = CreateWindow(TEXT("MyApp"), TEXT("Hi"), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT
+		, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, hInstance, NULL);
+
+    if( !_g_hWnd )
+        return E_FAIL;
+
+	ShowWindow(_g_hWnd, SW_SHOW);
+	return S_OK;	
+}
+
+cv::Mat hwnd2mat(HWND hwnd)
+{
+	HDC hwindowDC, hwindowCompatibleDC;
+
+	int height, width, srcheight, srcwidth;
+	HBITMAP hbwindow;
+	cv::Mat src;
+	BITMAPINFOHEADER  bi;
+
+	hwindowDC = GetDC(hwnd);
+	hwindowCompatibleDC = CreateCompatibleDC(hwindowDC);
+	SetStretchBltMode(hwindowCompatibleDC, COLORONCOLOR);
+
+	RECT windowsize;    // get the height and width of the screen
+	GetClientRect(hwnd, &windowsize);
+
+	srcheight = windowsize.bottom;
+	srcwidth = windowsize.right;
+	height = windowsize.bottom / 1;  //change this to whatever size you want to resize to
+	width = windowsize.right / 1;
+
+	src.create(height, width, CV_8UC4);
+
+	// create a bitmap
+	hbwindow = CreateCompatibleBitmap(hwindowDC, width, height);
+	bi.biSize = sizeof(BITMAPINFOHEADER);    //http://msdn.microsoft.com/en-us/library/windows/window/dd183402%28v=vs.85%29.aspx
+	bi.biWidth = width;
+	bi.biHeight = -height;  //this is the line that makes it draw upside down or not
+	bi.biPlanes = 1;
+	bi.biBitCount = 32;
+	bi.biCompression = BI_RGB;
+	bi.biSizeImage = 0;
+	bi.biXPelsPerMeter = 0;
+	bi.biYPelsPerMeter = 0;
+	bi.biClrUsed = 0;
+	bi.biClrImportant = 0;
+
+	// use the previously created device context with the bitmap
+	SelectObject(hwindowCompatibleDC, hbwindow);
+	// copy from the window device context to the bitmap device context
+	StretchBlt(hwindowCompatibleDC, 0, 0, width, height, hwindowDC, 0, 0, srcwidth, srcheight, SRCCOPY); //change SRCCOPY to NOTSRCCOPY for wacky colors !
+	GetDIBits(hwindowCompatibleDC, hbwindow, 0, height, src.data, (BITMAPINFO *)&bi, DIB_RGB_COLORS);  //copy from hwindowCompatibleDC to hbwindow
+
+	// avoid memory leak
+	DeleteObject(hbwindow);
+	DeleteDC(hwindowCompatibleDC);
+	ReleaseDC(hwnd, hwindowDC);
+
+	return src;
 }

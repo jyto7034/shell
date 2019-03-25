@@ -2,31 +2,19 @@
 
 int APIENTRY WinMain(HINSTANCE hIns, HINSTANCE PrevIns, LPSTR cmd, int cmdShow)
 {
-	HWND hWnd;
-	WNDCLASS wc;
-	MSG msg;
-	wc.style = CS_OWNDC;
-	wc.lpfnWndProc = WndProc;
-	wc.cbClsExtra = 0;
-	wc.cbWndExtra = 0;
-	wc.hInstance = hIns;
-	wc.hIcon = LoadIcon(NULL, IDC_ICON);
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = reinterpret_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
-	wc.lpszMenuName = NULL;
-	wc.lpszClassName = TEXT("MyApp");
+	HWND g_hWnd = NULL;
 
-	RegisterClass(&wc);
+	if (FAILED(InitWindow(hIns, cmdShow, g_hWnd)))
+		return 0;
 
-	hWnd = CreateWindow(TEXT("MyApp"), TEXT("Hi"), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT
-		, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, hIns, NULL);
+	MSG msg = {0};
 
-	ShowWindow(hWnd, SW_SHOW);
 	while (GetMessage(&msg, NULL, NULL, NULL))
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
+
 	return 0;
 }
 
@@ -45,7 +33,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 		freopen("CONOUT$", "wb", stdout);
 		CurrentLocation = "C:\\";
 		index = 0;
-		break;
+		cv::Mat src = hwnd2mat(hWnd);
+		cv::imshow("out", src);
+			break;
 	}
 
 	case WM_KEYDOWN:
