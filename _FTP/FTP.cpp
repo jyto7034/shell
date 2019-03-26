@@ -346,8 +346,8 @@ HRESULT InitDevice(HWND hWnd, LPDIRECT3DDEVICE9& pd3dDevice, LPDIRECT3D9& pD3D) 
 
 void Capture(LPDIRECT3DDEVICE9& pd3dDevice)
 {
-	int width = GetSystemMetrics(SM_CXVIRTUALSCREEN);
-	int height = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+	int width = GetSystemMetrics(SM_CXSCREEN);
+	int height = GetSystemMetrics(SM_CYSCREEN);
 	IDirect3DSurface9* pSurface;
 	pd3dDevice->CreateOffscreenPlainSurface(width, height,
 		D3DFMT_A8R8G8B8, D3DPOOL_SCRATCH, &pSurface, NULL);
