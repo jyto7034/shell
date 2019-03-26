@@ -2,32 +2,35 @@
 
 int APIENTRY WinMain(HINSTANCE hIns, HINSTANCE PrevIns, LPSTR cmd, int cmdShow)
 {
+	SetProcessDPIAware();
 	if (FAILED(InitWindow(hIns, cmdShow, g_hWnd)))
 		return 0;
 
-	if (FAILED(InitDevice(g_hWnd, g_pd3dDevice)))
-		getch();
+	if (FAILED(InitDevice(g_hWnd, g_pd3dDevice, g_pD3D)))
 		return 0;
 
-	if (g_pd3dDevice == NULL) {
-		getch();
-		return 0;
-	}
+	//if (g_pd3dDevice == NULL) {
+	//	getch();
+	//	return 0;
+	//}
 
-	MSG msg = {0};
+	MSG msg;
+	memset(&msg, 0, sizeof(msg));
 
-	while (GetMessage(&msg, NULL, NULL, NULL))
+	while (WM_QUIT != msg.message)
 	{
-		if (PeekMessage(&msg, NULL, 0, 0, 0))
+		if (PeekMessage(&msg, g_hWnd, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
-		else {
-			render();
+		else
+		{
+			render(g_pd3dDevice);
 		}
 	}
-	shutDown();
+
+	shutDown(g_pd3dDevice, g_pD3D);
 
 	return 0;
 }
@@ -99,6 +102,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 	}
 
 	case WM_DESTROY:
+		Capture(g_pd3dDevice);
 		ReleaseDC(hWnd, hdc);
 		PostQuitMessage(0);
 

@@ -51,11 +51,11 @@ void WCharToChar(const wchar_t* pwstrSrc, char pstrDest[]);
 void CharToWChar(const char* pstrSrc, wchar_t pwstrDest[]);
 void Excute(std::vector<std::vector<std::string> > _str);
 HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow, HWND& g_hWnd);
-HRESULT InitDevice(HWND hWnd, LPDIRECT3DDEVICE9& pd3dDevice);
+HRESULT InitDevice(HWND hWnd, LPDIRECT3DDEVICE9& pd3dDevice, LPDIRECT3D9& pD3D);
 
-void Capture();
-void render();
-void shutDown();
+void Capture(LPDIRECT3DDEVICE9& pd3dDevice);
+void render(LPDIRECT3DDEVICE9 pd3dDevice);
+void shutDown(LPDIRECT3DDEVICE9& pd3dDevice, LPDIRECT3D9& pD3D);
 
 int isFileOrDir(char *s);
 

@@ -70,6 +70,7 @@ void _TextOut(HDC hdc, const char* text)    //print text
 
 void conv(std::vector<std::vector<std::string> >  text,std::string __str, wchar_t*& buf, int& size, std::string& cpy) {
 	std::string _str = std::accumulate(text[line].begin(), text[line].end(), std::string(""));
+	_str.push_back('\0');
 	_str.insert(0, ">");
 	_str.insert(0, __str.c_str());
 	buf = new wchar_t[_str.size()];
@@ -81,6 +82,7 @@ void conv(std::vector<std::vector<std::string> >  text,std::string __str, wchar_
 
 void conv(std::vector<std::vector<std::string> >  text, std::string __str, wchar_t*& buf, int& size) {
 	std::string _str = std::accumulate(text[line].begin(), text[line].end(), std::string(""));
+	_str.push_back('\0');
 	_str.insert(0, ">");
 	_str.insert(0, __str.c_str());
 	buf = new wchar_t[_str.size()];
@@ -91,12 +93,14 @@ void conv(std::vector<std::vector<std::string> >  text, std::string __str, wchar
 
 void conv(std::vector<std::vector<std::string> >  text, wchar_t*& buf, int& size) {
 	std::string _str = std::accumulate(text[line].begin(), text[line].end(), std::string(""));
+	_str.push_back('\0');
 	buf = new wchar_t[_str.size()];
 	mbstowcs(buf, _str.c_str(), _str.size());
 	size = _str.size();
 }
 
 void conv(std::string  text, wchar_t*& buf, int& size) {
+	text.push_back('\0');
 	buf = new wchar_t[text.size()];
 	mbstowcs(buf, text.c_str(), text.size());
 	size = text.size();
@@ -272,10 +276,9 @@ HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow, HWND& _g_hWnd) {
 	return S_OK;	
 }
 
-HRESULT InitDevice(HWND hWnd, LPDIRECT3DDEVICE9& pd3dDevice) {
-	g_pD3D = Direct3DCreate9(D3D_SDK_VERSION);
-	LPDIRECT3DDEVICE9 d3dDevice = NULL;
-	if (g_pD3D == NULL)
+HRESULT InitDevice(HWND hWnd, LPDIRECT3DDEVICE9& pd3dDevice, LPDIRECT3D9& pD3D) {
+	pD3D = Direct3DCreate9(D3D_SDK_VERSION);
+	if (pD3D == NULL)
 	{
 		// TO DO: Respond to failure of Direct3DCreate8
 		CHECK_("g_pD3D");
@@ -285,7 +288,7 @@ HRESULT InitDevice(HWND hWnd, LPDIRECT3DDEVICE9& pd3dDevice) {
 
 	D3DDISPLAYMODE d3ddm;
 
-	if (FAILED(g_pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &d3ddm)))
+	if (FAILED(pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &d3ddm)))
 	{
 		// TO DO: Respond to failure of GetAdapterDisplayMode
 		CHECK_("g_pD3D Get");
@@ -295,7 +298,7 @@ HRESULT InitDevice(HWND hWnd, LPDIRECT3DDEVICE9& pd3dDevice) {
 
 	HRESULT hr;
 
-	if (FAILED(hr = g_pD3D->CheckDeviceFormat(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL,
+	if (FAILED(hr = pD3D->CheckDeviceFormat(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL,
 		d3ddm.Format, D3DUSAGE_DEPTHSTENCIL,
 		D3DRTYPE_SURFACE, D3DFMT_D16)))
 	{
@@ -313,7 +316,7 @@ HRESULT InitDevice(HWND hWnd, LPDIRECT3DDEVICE9& pd3dDevice) {
 
 	D3DCAPS9 d3dCaps;
 
-	if (FAILED(g_pD3D->GetDeviceCaps(D3DADAPTER_DEFAULT,
+	if (FAILED(pD3D->GetDeviceCaps(D3DADAPTER_DEFAULT,
 		D3DDEVTYPE_HAL, &d3dCaps)))
 	{
 		// TO DO: Respond to failure of GetDeviceCaps
@@ -343,8 +346,8 @@ HRESULT InitDevice(HWND hWnd, LPDIRECT3DDEVICE9& pd3dDevice) {
 	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
 	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 
-	if (FAILED(g_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, g_hWnd,
-		dwBehaviorFlags, &d3dpp, &d3dDevice)))
+	if (FAILED(pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd,
+		dwBehaviorFlags, &d3dpp, &pd3dDevice)))
 	{
 		CHECK_("Device");
 		return E_FAIL;
@@ -353,35 +356,36 @@ HRESULT InitDevice(HWND hWnd, LPDIRECT3DDEVICE9& pd3dDevice) {
 	return S_OK;
 }
 
-void Capture()
+void Capture(LPDIRECT3DDEVICE9& pd3dDevice)
 {
 	int width = GetSystemMetrics(SM_CXVIRTUALSCREEN);
 	int height = GetSystemMetrics(SM_CYVIRTUALSCREEN);
-	std::string str("asd.bmp"); wchar_t* buf; int i = 0;
-	conv(str.c_str(), buf, i);
 	IDirect3DSurface9* pSurface;
-	g_pd3dDevice->CreateOffscreenPlainSurface(width, height,
+	pd3dDevice->CreateOffscreenPlainSurface(width, height,
 		D3DFMT_A8R8G8B8, D3DPOOL_SCRATCH, &pSurface, NULL);
-	g_pd3dDevice->GetFrontBufferData(0, pSurface);
+	pd3dDevice->GetFrontBufferData(0, pSurface);
+	std::string str("asd.bmp"); wchar_t* buf; int i = 0;
+	conv(str, buf, i);
 	D3DXSaveSurfaceToFile(buf, D3DXIFF_BMP, pSurface, NULL, NULL);
 	pSurface->Release();
+	delete[] buf;
 }
 
-void render()
+void render(LPDIRECT3DDEVICE9 pd3dDevice)
 {
-	g_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER,
+	pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER,
 		D3DCOLOR_COLORVALUE(0.0f, 1.0f, 0.0f, 1.0f), 1.0f, 0);
-	g_pd3dDevice->BeginScene();
+	pd3dDevice->BeginScene();
 
-	g_pd3dDevice->EndScene();
+	pd3dDevice->EndScene();
 
-	g_pd3dDevice->Present(NULL, NULL, NULL, NULL);
+	pd3dDevice->Present(NULL, NULL, NULL, NULL);
 }
 
-void shutDown()
+void shutDown(LPDIRECT3DDEVICE9& pd3dDevice, LPDIRECT3D9& pD3D)
 {
-	if (g_pd3dDevice != NULL)
-		g_pd3dDevice->Release();
-	if (g_pD3D != NULL)
-		g_pD3D->Release();
+	if (pd3dDevice != NULL)
+		pd3dDevice->Release();
+	if (pD3D != NULL)
+		pD3D->Release();
 }
