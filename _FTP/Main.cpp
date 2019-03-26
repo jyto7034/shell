@@ -2,18 +2,32 @@
 
 int APIENTRY WinMain(HINSTANCE hIns, HINSTANCE PrevIns, LPSTR cmd, int cmdShow)
 {
-	HWND g_hWnd = NULL;
-
 	if (FAILED(InitWindow(hIns, cmdShow, g_hWnd)))
 		return 0;
+
+	if (FAILED(InitDevice(g_hWnd, g_pd3dDevice)))
+		getch();
+		return 0;
+
+	if (g_pd3dDevice == NULL) {
+		getch();
+		return 0;
+	}
 
 	MSG msg = {0};
 
 	while (GetMessage(&msg, NULL, NULL, NULL))
 	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
+		if (PeekMessage(&msg, NULL, 0, 0, 0))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+		else {
+			render();
+		}
 	}
+	shutDown();
 
 	return 0;
 }
@@ -33,9 +47,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 		freopen("CONOUT$", "wb", stdout);
 		CurrentLocation = "C:\\";
 		index = 0;
-		cv::Mat src = hwnd2mat(hWnd);
-		cv::imshow("out", src);
-			break;
+		break;
 	}
 
 	case WM_KEYDOWN:

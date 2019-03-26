@@ -26,14 +26,11 @@ Named by µ¿ÈÆ, ÅÂ±Õ
 #include <numeric>
 #include <atlbase.h>
 #include <comdef.h>
-#include <opencv2/opencv.hpp>
-#include <opencv2/imgproc.hpp>
-#include <opencv2/highgui.hpp>
 
 #pragma comment(lib, "dxgi.lib")
-#pragma comment(lib, "gdiplus")
 
 #define CHECK std::cout<< "CHECK" << std::endl;
+#define CHECK_(x) std::cout<< x << std::endl;
 #define CT(x) std::cout<< x << std::endl;
 #define CT(x, y) std::cout<< x << " : " << y << std::endl;
 #define WIDTHBYTES(bits)
@@ -54,8 +51,11 @@ void WCharToChar(const wchar_t* pwstrSrc, char pstrDest[]);
 void CharToWChar(const char* pstrSrc, wchar_t pwstrDest[]);
 void Excute(std::vector<std::vector<std::string> > _str);
 HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow, HWND& g_hWnd);
+HRESULT InitDevice(HWND hWnd, LPDIRECT3DDEVICE9& pd3dDevice);
 
-cv::Mat hwnd2mat(HWND hwnd);
+void Capture();
+void render();
+void shutDown();
 
 int isFileOrDir(char *s);
 
@@ -66,6 +66,10 @@ BOOL ls();
 std::vector<std::string> getfiles(const std::string &_path);
 std::vector<std::string> getfolder();
 
+static HWND g_hWnd = NULL;
+static HINSTANCE g_hInst;
+static LPDIRECT3D9       g_pD3D = NULL;
+static LPDIRECT3DDEVICE9 g_pd3dDevice = NULL;
 
 static std::vector<std::vector<std::string> > str(50);
 static int line = 0;
@@ -78,8 +82,6 @@ static std::string CurrentLocation;
 static std::string CurrentLocName;
 static std::vector<char> input;
 static std::string cmd;
-
-static HINSTANCE					g_hInst;
 
 class Caret {
 public:

@@ -272,53 +272,116 @@ HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow, HWND& _g_hWnd) {
 	return S_OK;	
 }
 
-cv::Mat hwnd2mat(HWND hwnd)
+HRESULT InitDevice(HWND hWnd, LPDIRECT3DDEVICE9& pd3dDevice) {
+	g_pD3D = Direct3DCreate9(D3D_SDK_VERSION);
+	LPDIRECT3DDEVICE9 d3dDevice = NULL;
+	if (g_pD3D == NULL)
+	{
+		// TO DO: Respond to failure of Direct3DCreate8
+		CHECK_("g_pD3D");
+		return E_FAIL;
+	}
+
+
+	D3DDISPLAYMODE d3ddm;
+
+	if (FAILED(g_pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &d3ddm)))
+	{
+		// TO DO: Respond to failure of GetAdapterDisplayMode
+		CHECK_("g_pD3D Get");
+		return E_FAIL;
+	}
+
+
+	HRESULT hr;
+
+	if (FAILED(hr = g_pD3D->CheckDeviceFormat(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL,
+		d3ddm.Format, D3DUSAGE_DEPTHSTENCIL,
+		D3DRTYPE_SURFACE, D3DFMT_D16)))
+	{
+		if (hr == D3DERR_NOTAVAILABLE)
+			// POTENTIAL PROBLEM: We need at least a 16-bit z-buffer!
+			CHECK_("g_pD3D CHECK");
+			return E_FAIL;
+	}
+
+
+	//
+	// Do we support hardware vertex processing? if so, use it. 
+	// If not, downgrade to software.
+	//
+
+	D3DCAPS9 d3dCaps;
+
+	if (FAILED(g_pD3D->GetDeviceCaps(D3DADAPTER_DEFAULT,
+		D3DDEVTYPE_HAL, &d3dCaps)))
+	{
+		// TO DO: Respond to failure of GetDeviceCaps
+		CHECK_("g_pD3D Caps");
+		return E_FAIL;
+	}
+
+
+	DWORD dwBehaviorFlags = 0;
+
+	if (d3dCaps.VertexProcessingCaps != 0)
+		dwBehaviorFlags |= D3DCREATE_HARDWARE_VERTEXPROCESSING;
+	else
+		dwBehaviorFlags |= D3DCREATE_SOFTWARE_VERTEXPROCESSING;
+
+	//
+	// Everything checks out - create a simple, windowed device.
+	//
+
+	D3DPRESENT_PARAMETERS d3dpp;
+	memset(&d3dpp, 0, sizeof(d3dpp));
+
+	d3dpp.BackBufferFormat = d3ddm.Format;
+	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
+	d3dpp.Windowed = TRUE;
+	d3dpp.EnableAutoDepthStencil = TRUE;
+	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
+	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+
+	if (FAILED(g_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, g_hWnd,
+		dwBehaviorFlags, &d3dpp, &d3dDevice)))
+	{
+		CHECK_("Device");
+		return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+void Capture()
 {
-	HDC hwindowDC, hwindowCompatibleDC;
+	int width = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+	int height = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+	std::string str("asd.bmp"); wchar_t* buf; int i = 0;
+	conv(str.c_str(), buf, i);
+	IDirect3DSurface9* pSurface;
+	g_pd3dDevice->CreateOffscreenPlainSurface(width, height,
+		D3DFMT_A8R8G8B8, D3DPOOL_SCRATCH, &pSurface, NULL);
+	g_pd3dDevice->GetFrontBufferData(0, pSurface);
+	D3DXSaveSurfaceToFile(buf, D3DXIFF_BMP, pSurface, NULL, NULL);
+	pSurface->Release();
+}
 
-	int height, width, srcheight, srcwidth;
-	HBITMAP hbwindow;
-	cv::Mat src;
-	BITMAPINFOHEADER  bi;
+void render()
+{
+	g_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER,
+		D3DCOLOR_COLORVALUE(0.0f, 1.0f, 0.0f, 1.0f), 1.0f, 0);
+	g_pd3dDevice->BeginScene();
 
-	hwindowDC = GetDC(hwnd);
-	hwindowCompatibleDC = CreateCompatibleDC(hwindowDC);
-	SetStretchBltMode(hwindowCompatibleDC, COLORONCOLOR);
+	g_pd3dDevice->EndScene();
 
-	RECT windowsize;    // get the height and width of the screen
-	GetClientRect(hwnd, &windowsize);
+	g_pd3dDevice->Present(NULL, NULL, NULL, NULL);
+}
 
-	srcheight = windowsize.bottom;
-	srcwidth = windowsize.right;
-	height = windowsize.bottom / 1;  //change this to whatever size you want to resize to
-	width = windowsize.right / 1;
-
-	src.create(height, width, CV_8UC4);
-
-	// create a bitmap
-	hbwindow = CreateCompatibleBitmap(hwindowDC, width, height);
-	bi.biSize = sizeof(BITMAPINFOHEADER);    //http://msdn.microsoft.com/en-us/library/windows/window/dd183402%28v=vs.85%29.aspx
-	bi.biWidth = width;
-	bi.biHeight = -height;  //this is the line that makes it draw upside down or not
-	bi.biPlanes = 1;
-	bi.biBitCount = 32;
-	bi.biCompression = BI_RGB;
-	bi.biSizeImage = 0;
-	bi.biXPelsPerMeter = 0;
-	bi.biYPelsPerMeter = 0;
-	bi.biClrUsed = 0;
-	bi.biClrImportant = 0;
-
-	// use the previously created device context with the bitmap
-	SelectObject(hwindowCompatibleDC, hbwindow);
-	// copy from the window device context to the bitmap device context
-	StretchBlt(hwindowCompatibleDC, 0, 0, width, height, hwindowDC, 0, 0, srcwidth, srcheight, SRCCOPY); //change SRCCOPY to NOTSRCCOPY for wacky colors !
-	GetDIBits(hwindowCompatibleDC, hbwindow, 0, height, src.data, (BITMAPINFO *)&bi, DIB_RGB_COLORS);  //copy from hwindowCompatibleDC to hbwindow
-
-	// avoid memory leak
-	DeleteObject(hbwindow);
-	DeleteDC(hwindowCompatibleDC);
-	ReleaseDC(hwnd, hwindowDC);
-
-	return src;
+void shutDown()
+{
+	if (g_pd3dDevice != NULL)
+		g_pd3dDevice->Release();
+	if (g_pD3D != NULL)
+		g_pD3D->Release();
 }
