@@ -1,6 +1,25 @@
-﻿  Main.cpp
+﻿  FTP.cpp
 c:\users\blstrdnr\source\repos\_ftp\_ftp\ftp.h(35): warning C4005: 'CT': 매크로 재정의
   c:\users\blstrdnr\source\repos\_ftp\_ftp\ftp.h(34): note: 'CT'의 이전 정의를 참조하십시오.
-c:\users\blstrdnr\source\repos\_ftp\_ftp\main.cpp(50): warning C4996: 'freopen': This function or variable may be unsafe. Consider using freopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(243): note: 'freopen' 선언을 참조하십시오.
+c:\users\blstrdnr\source\repos\_ftp\_ftp\ftp.cpp(77): warning C4996: 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdlib.h(927): note: 'mbstowcs' 선언을 참조하십시오.
+c:\users\blstrdnr\source\repos\_ftp\_ftp\ftp.cpp(89): warning C4996: 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdlib.h(927): note: 'mbstowcs' 선언을 참조하십시오.
+c:\users\blstrdnr\source\repos\_ftp\_ftp\ftp.cpp(98): warning C4996: 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdlib.h(927): note: 'mbstowcs' 선언을 참조하십시오.
+c:\users\blstrdnr\source\repos\_ftp\_ftp\ftp.cpp(105): warning C4996: 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdlib.h(927): note: 'mbstowcs' 선언을 참조하십시오.
+c:\users\blstrdnr\source\repos\_ftp\_ftp\ftp.cpp(111): warning C4996: 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdlib.h(927): note: 'mbstowcs' 선언을 참조하십시오.
+c:\users\blstrdnr\source\repos\_ftp\_ftp\ftp.cpp(118): warning C4996: 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdlib.h(927): note: 'mbstowcs' 선언을 참조하십시오.
+c:\users\blstrdnr\source\repos\_ftp\_ftp\ftp.cpp(125): warning C4996: 'wcstombs': This function or variable may be unsafe. Consider using wcstombs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdlib.h(1015): note: 'wcstombs' 선언을 참조하십시오.
+c:\users\blstrdnr\source\repos\_ftp\_ftp\ftp.cpp(140): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+c:\users\blstrdnr\source\repos\_ftp\_ftp\ftp.cpp(160): warning C4996: 'chdir': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _chdir. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\direct.h(102): note: 'chdir' 선언을 참조하십시오.
+c:\users\blstrdnr\source\repos\_ftp\_ftp\ftp.cpp(173): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+c:\users\blstrdnr\source\repos\_ftp\_ftp\ftp.cpp(219): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+c:\users\blstrdnr\source\repos\_ftp\_ftp\ftp.cpp(224): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
   _FTP.vcxproj -> C:\Users\BLSTRDNR\source\repos\_FTP\Debug\_FTP.exe

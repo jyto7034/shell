@@ -280,7 +280,6 @@ HRESULT InitDevice(HWND hWnd, LPDIRECT3DDEVICE9& pd3dDevice, LPDIRECT3D9& pD3D) 
 	pD3D = Direct3DCreate9(D3D_SDK_VERSION);
 	if (pD3D == NULL)
 	{
-		// TO DO: Respond to failure of Direct3DCreate8
 		CHECK_("g_pD3D");
 		return E_FAIL;
 	}
@@ -290,7 +289,6 @@ HRESULT InitDevice(HWND hWnd, LPDIRECT3DDEVICE9& pd3dDevice, LPDIRECT3D9& pD3D) 
 
 	if (FAILED(pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &d3ddm)))
 	{
-		// TO DO: Respond to failure of GetAdapterDisplayMode
 		CHECK_("g_pD3D Get");
 		return E_FAIL;
 	}
@@ -303,23 +301,16 @@ HRESULT InitDevice(HWND hWnd, LPDIRECT3DDEVICE9& pd3dDevice, LPDIRECT3D9& pD3D) 
 		D3DRTYPE_SURFACE, D3DFMT_D16)))
 	{
 		if (hr == D3DERR_NOTAVAILABLE)
-			// POTENTIAL PROBLEM: We need at least a 16-bit z-buffer!
 			CHECK_("g_pD3D CHECK");
 			return E_FAIL;
 	}
 
-
-	//
-	// Do we support hardware vertex processing? if so, use it. 
-	// If not, downgrade to software.
-	//
 
 	D3DCAPS9 d3dCaps;
 
 	if (FAILED(pD3D->GetDeviceCaps(D3DADAPTER_DEFAULT,
 		D3DDEVTYPE_HAL, &d3dCaps)))
 	{
-		// TO DO: Respond to failure of GetDeviceCaps
 		CHECK_("g_pD3D Caps");
 		return E_FAIL;
 	}
@@ -332,9 +323,6 @@ HRESULT InitDevice(HWND hWnd, LPDIRECT3DDEVICE9& pd3dDevice, LPDIRECT3D9& pD3D) 
 	else
 		dwBehaviorFlags |= D3DCREATE_SOFTWARE_VERTEXPROCESSING;
 
-	//
-	// Everything checks out - create a simple, windowed device.
-	//
 
 	D3DPRESENT_PARAMETERS d3dpp;
 	memset(&d3dpp, 0, sizeof(d3dpp));
