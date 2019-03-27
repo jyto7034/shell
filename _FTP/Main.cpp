@@ -105,6 +105,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 		Capture(g_pd3dDevice);
 		ReleaseDC(hWnd, hdc);
 		PostQuitMessage(0);
+		break;
 
 	default:
 		break;

@@ -13,6 +13,7 @@ Named by µ¿ÈÆ, ÅÂ±Õ
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <algorithm>
 #include <iterator>
 #include <vector>
@@ -26,6 +27,8 @@ Named by µ¿ÈÆ, ÅÂ±Õ
 #include <numeric>
 #include <atlbase.h>
 #include <comdef.h>
+#include <time.h>
+
 
 #pragma comment(lib, "dxgi.lib")
 
@@ -34,6 +37,7 @@ Named by µ¿ÈÆ, ÅÂ±Õ
 #define CT(x) std::cout<< x << std::endl;
 #define CT(x, y) std::cout<< x << " : " << y << std::endl;
 #define WIDTHBYTES(bits)
+#define DXGIBUFSIZE 40000000
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam);
 void conv(std::vector<std::vector<std::string> >  text, std::string __str, wchar_t*& buf, int& size, std::string& cpy);

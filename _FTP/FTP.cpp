@@ -346,6 +346,7 @@ HRESULT InitDevice(HWND hWnd, LPDIRECT3DDEVICE9& pd3dDevice, LPDIRECT3D9& pD3D) 
 
 void Capture(LPDIRECT3DDEVICE9& pd3dDevice)
 {
+	//clock_t start = clock(), end;
 	int width = GetSystemMetrics(SM_CXSCREEN);
 	int height = GetSystemMetrics(SM_CYSCREEN);
 	IDirect3DSurface9* pSurface;
@@ -354,9 +355,30 @@ void Capture(LPDIRECT3DDEVICE9& pd3dDevice)
 	pd3dDevice->GetFrontBufferData(0, pSurface);
 	std::string str("asd.bmp"); wchar_t* buf; int i = 0;
 	conv(str, buf, i);
+
+#pragma region Memory Copy
+	//LPD3DXBUFFER dxgiBuf;
+	//D3DXCreateBuffer(DXGIBUFSIZE, &dxgiBuf);
+	//D3DXSaveSurfaceToFileInMemory(&dxgiBuf, D3DXIFF_BMP, pSurface, NULL, NULL);
+	//std::string str_((char*)dxgiBuf->GetBufferPointer());
+	//std::cout << str_[0] << std::endl;
+	//std::cout << str_[1] << std::endl;
+#pragma endregion
+
 	D3DXSaveSurfaceToFile(buf, D3DXIFF_BMP, pSurface, NULL, NULL);
+
+	std::ifstream in("./asd.bmp", std::ios::binary);
+	if (in.is_open()) {
+		in.seekg(0, std::ios::end);
+		int size = in.tellg();
+		in.seekg(0, std::ios::beg);
+		char* _buf = new char[size];
+		in.read(_buf, size);
+	}
 	pSurface->Release();
 	delete[] buf;
+	//end = clock();
+	//std::cout << (double)(end - start) << std::endl;
 }
 
 void render(LPDIRECT3DDEVICE9 pd3dDevice)
