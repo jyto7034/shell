@@ -2,7 +2,7 @@
 #include "FTP.h"
 
 void Excute(std::vector<std::vector<std::string> > text) {
-	std::string _str = std::accumulate(text[line].begin(), text[line].end(), std::string(""));
+	std::string _str = std::accumulate(text[LINE].begin(), text[LINE].end(), std::string(""));
 	std::cout << _str.c_str() << std::endl;
 	std::stringstream ss(_str);
 
@@ -18,7 +18,7 @@ void Excute(std::vector<std::vector<std::string> > text) {
 
 void _TextOut(HDC hdc, std::vector<std::vector<std::string> >  text, std::string loc)    //print text
 {
-	if (text[line].size() == 0)
+	if (text[LINE].size() == 0)
 	{
 		return;
 	}
@@ -31,7 +31,7 @@ void _TextOut(HDC hdc, std::vector<std::vector<std::string> >  text, std::string
 
 void _TextOut(HDC hdc, std::vector<std::vector<std::string> >  text)    //print text
 {
-	if (text[line].size() == 0)
+	if (text[LINE].size() == 0)
 	{
 		return;
 	}
@@ -69,7 +69,7 @@ void _TextOut(HDC hdc, const char* text)    //print text
 }
 
 void conv(std::vector<std::vector<std::string> >  text,std::string __str, wchar_t*& buf, int& size, std::string& cpy) {
-	std::string _str = std::accumulate(text[line].begin(), text[line].end(), std::string(""));
+	std::string _str = std::accumulate(text[LINE].begin(), text[LINE].end(), std::string(""));
 	_str.push_back('\0');
 	_str.insert(0, ">");
 	_str.insert(0, __str.c_str());
@@ -81,7 +81,7 @@ void conv(std::vector<std::vector<std::string> >  text,std::string __str, wchar_
 }
 
 void conv(std::vector<std::vector<std::string> >  text, std::string __str, wchar_t*& buf, int& size) {
-	std::string _str = std::accumulate(text[line].begin(), text[line].end(), std::string(""));
+	std::string _str = std::accumulate(text[LINE].begin(), text[LINE].end(), std::string(""));
 	_str.push_back('\0');
 	_str.insert(0, ">");
 	_str.insert(0, __str.c_str());
@@ -92,7 +92,7 @@ void conv(std::vector<std::vector<std::string> >  text, std::string __str, wchar
 }
 
 void conv(std::vector<std::vector<std::string> >  text, wchar_t*& buf, int& size) {
-	std::string _str = std::accumulate(text[line].begin(), text[line].end(), std::string(""));
+	std::string _str = std::accumulate(text[LINE].begin(), text[LINE].end(), std::string(""));
 	_str.push_back('\0');
 	buf = new wchar_t[_str.size()];
 	mbstowcs(buf, _str.c_str(), _str.size());
@@ -273,7 +273,7 @@ HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow, HWND& _g_hWnd) {
         return E_FAIL;
 
 	ShowWindow(_g_hWnd, SW_SHOW);
-	return S_OK;	
+return S_OK;
 }
 
 HRESULT InitDevice(HWND hWnd, LPDIRECT3DDEVICE9& pd3dDevice, LPDIRECT3D9& pD3D) {
@@ -302,7 +302,7 @@ HRESULT InitDevice(HWND hWnd, LPDIRECT3DDEVICE9& pd3dDevice, LPDIRECT3D9& pD3D) 
 	{
 		if (hr == D3DERR_NOTAVAILABLE)
 			CHECK_("g_pD3D CHECK");
-			return E_FAIL;
+		return E_FAIL;
 	}
 
 
@@ -346,16 +346,16 @@ HRESULT InitDevice(HWND hWnd, LPDIRECT3DDEVICE9& pd3dDevice, LPDIRECT3D9& pD3D) 
 
 void Capture(LPDIRECT3DDEVICE9& pd3dDevice)
 {
-	//clock_t start = clock(), end;
+	clock_t start = clock(), end;
 	int width = GetSystemMetrics(SM_CXSCREEN);
 	int height = GetSystemMetrics(SM_CYSCREEN);
+
 	IDirect3DSurface9* pSurface;
 	pd3dDevice->CreateOffscreenPlainSurface(width, height,
 		D3DFMT_A8R8G8B8, D3DPOOL_SCRATCH, &pSurface, NULL);
 	pd3dDevice->GetFrontBufferData(0, pSurface);
 	std::string str("asd.bmp"); wchar_t* buf; int i = 0;
 	conv(str, buf, i);
-
 #pragma region Memory Copy
 	//LPD3DXBUFFER dxgiBuf;
 	//D3DXCreateBuffer(DXGIBUFSIZE, &dxgiBuf);
@@ -367,20 +367,71 @@ void Capture(LPDIRECT3DDEVICE9& pd3dDevice)
 
 	D3DXSaveSurfaceToFile(buf, D3DXIFF_BMP, pSurface, NULL, NULL);
 
-	std::ifstream in("./asd.bmp", std::ios::binary);
-	if (in.is_open()) {
-		in.seekg(0, std::ios::end);
-		int size = in.tellg();
-		in.seekg(0, std::ios::beg);
-		char* _buf = new char[size];
-		in.read(_buf, size);
-		delete[] buf, _buf;
+#pragma region C I/O
+	FILE *_fi, *fi;
+	char *sbuf = new char[BUFSIZE+ 2], *_sbuf = new char[BUFSIZE + 2];
+	ZeroMemory(sbuf, BUFSIZE+ 2);
+	ZeroMemory(_sbuf, BUFSIZE + 2);
+
+	if ((_fi = fopen("./_asd.bmp", "rb")) == NULL) {
+		return;
 	}
+	if ((fi = fopen("./asd.bmp", "rb")) == NULL) {
+		return;
+	}
+	//fgets(_fbuf, BUFSIZE + 2, _fi);
+	//fgets(sbuf, BUFSIZE, fi);
+	int __i = fread(sbuf, sizeof(char), BUFSIZE, fi);
+	fclose(_fi);
+	fclose(fi);
+#pragma endregion
+
+#pragma region C++ I/O
+	//std::ifstream _in("./_asd.bmp", std::ios::binary);
+	//std::ifstream in("./asd.bmp", std::ios::binary);
+	//if (in && _in) {
+	//	char* _buf = new char[BUFSIZE];
+	//	char* __buf = new char[BUFSIZE];
+	//	in.read(_buf, BUFSIZE);
+	//	_in.read(__buf, BUFSIZ);
+	//	delete[] _buf, __buf;
+	//}
+	//_in.close();
+	//in.close();
+#pragma endregion
+	//std::string v;
+	//com(sbuf, _sbuf, __i, v);
+	//std::cout << v.size();
+	
+
+	//std::string b(fbuf);
+	//com(fbuf, _fbuf, b);
+
 	pSurface->Release();
-	delete[] buf;
-	in.close();
-	//end = clock();
-	//std::cout << (double)(end - start) << std::endl;
+	delete[] buf, sbuf, _sbuf;
+	end = clock();
+	std::cout << (double)(end - start) << std::endl;
+}
+
+
+void com(char*& a, char*& b, int size, std::string& out) {
+	//while (*a != NULL)
+	//{
+	//	if ((int)a == (int)b)	 out.push_back(0);
+
+	//	else out.push_back(*b);
+
+	//	a++, b++;
+	//}
+
+	for (int i = 0; i < size; i++) {
+		if (a[i] == b[i]) {
+			out.push_back(0);
+			std::cout << "asd" << std::endl;
+		}
+
+		else out.push_back(b[i]);
+	}
 }
 
 void render(LPDIRECT3DDEVICE9 pd3dDevice)

@@ -71,7 +71,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 	{
 		if (wParam == VK_BACK) {
 			if (str.size() > 0 && index != 0) {
-				str[line].erase(str[line].begin() + index - 1, str[line].begin() + index);
+				str[LINE].erase(str[LINE].begin() + index - 1, str[LINE].begin() + index);
 				index -= 1;
 			}
 			break;
@@ -80,9 +80,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			Excute(str);
 		}
 		else {
-			char temp = wParam;
-			std::string s; s.push_back(temp);
-			str[line].push_back(s);
+			std::string s; s.push_back((char)wParam);
+			str[LINE].push_back(s);
 			//std::cout << index << std::endl;
 			index++;
 		}
