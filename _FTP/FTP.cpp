@@ -374,9 +374,11 @@ void Capture(LPDIRECT3DDEVICE9& pd3dDevice)
 		in.seekg(0, std::ios::beg);
 		char* _buf = new char[size];
 		in.read(_buf, size);
+		delete[] buf, _buf;
 	}
 	pSurface->Release();
 	delete[] buf;
+	in.close();
 	//end = clock();
 	//std::cout << (double)(end - start) << std::endl;
 }
