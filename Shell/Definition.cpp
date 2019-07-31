@@ -6,7 +6,7 @@ void convertor(wchar_t*& buf, const char* str) {
 	mbstowcs(buf, str, strlen(str) + 1);
 }
 
-void Caret::Update(std::vector<std::vector<std::string> >&  text, std::string Location, int  _index)
+void Caret::Update(std::vector<std::vector<std::string> >&  text, std::string Location, int  _index, int  pindex_y, HWND hWnd)
 {
 	if (str.size() > 0)
 	{
@@ -18,14 +18,15 @@ void Caret::Update(std::vector<std::vector<std::string> >&  text, std::string Lo
 
 		convertor(buf, _str.c_str());
 
-		GetTextExtentPoint(hdc, buf, _str.length() - 1, &size);
+		GetTextExtentPoint(hdc, buf, (_str.length() - 1 + _index + 4) / 2, &size);
 		if (_index != 0) {
-			SetCaretPos((size.cx), size.cy);
+			SetCaretPos(size.cx, pindex_y * 16);
 		}
 		else
-			SetCaretPos(size.cx, size.cy);
+			SetCaretPos(size.cx, pindex_y * 16);
 		delete[] buf;
 	}
+	InvalidateRect(hWnd, NULL, TRUE);
 	return;
 }
 
@@ -56,17 +57,15 @@ HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow, HWND& g_hWnd) {
 }
 
 
-void Excute(std::vector<std::vector<std::string> > text, std::string _CurrentLocation, HWND& hWnd) { return; }
+void Excute(std::vector<std::vector<std::string> > text, std::string _CurrentLocation, HWND& hWnd) {
+	
+
+	return;
+}
 
 void Cleanup() { 
 	MsgQue.Releas();
 	return; 
-}
-
-void Erase(int index) {
-	//MsgQue[index - 1].Releas();
-	//MsgQue.erase(MsgQue.begin() + (index - 1));
-	return;
 }
 
 int isFileOrDir(char* s) { return true; }
@@ -124,9 +123,9 @@ void _MsgQue::SetData(const char* str, int size) {
 	this->len = size;
 	wchar_t* buf;
 	convertor(buf, const_cast<char*>(str));
-	if (init) {
+	if (inited) {
 		this->str = new wchar_t[size + 1];
-		init = true;
+		inited = true;
 	}
 	else {
 		delete[] this->str;
@@ -137,7 +136,7 @@ void _MsgQue::SetData(const char* str, int size) {
 }
 
 void _MsgQue::Releas() {
-	std::cout << "Called";
+	std::cout << "Deleted : ";
 	wprintf(this->str);
 	std::cout << std::endl;
 	delete[] this->str;
@@ -159,17 +158,16 @@ void AddTextQue(HDC hdc, std::vector<std::vector<std::string> >  text, std::stri
 	MsgQue.SetData(_str.c_str(), strlen(_str.c_str()));
 }
 
-void TEXTOUT(HDC hdc, HWND hWnd) {
-	std::cout << MsgQue.len - (CurrentLocation.length()) << std::endl;
+void TEXTOUT(HDC hdc, HWND hWnd, int pIndex_y) {
 	if (MsgQue.len - (CurrentLocation.length()) == 1) {
 		wcscpy(MsgQue.str, L"");
 		wchar_t* buf;
 		convertor(buf, CurrentLocation.c_str());
-		TextOut(hdc, 0, 0, buf, CurrentLocation.length());
+		TextOut(hdc, 0, pIndex_y * 16, buf, CurrentLocation.length());
 		delete[] buf;
 	}
 	else
-		TextOut(hdc, 0, 0, MsgQue.str, MsgQue.len);
+		TextOut(hdc, 0, pIndex_y * 16, MsgQue.str, MsgQue.len);
 }
 
 #pragma endregion

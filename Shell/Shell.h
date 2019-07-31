@@ -26,11 +26,10 @@ HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow, HWND& g_hWnd);
 
 void Excute(std::vector<std::vector<std::string> > text, std::string _CurrentLocation, HWND& hWnd);
 void Cleanup();
-void Erase(int index);
 int isFileOrDir(char* s);
 
 void AddTextQue(HDC hdc, std::vector<std::vector<std::string> >  text, std::string loc);
-void TEXTOUT(HDC hdc, HWND hWnd);
+void TEXTOUT(HDC hdc, HWND hWnd, int pIndex_y);
 
 std::vector<std::string> getfiles(std::string& _path);
 std::vector<std::string> getfolder();
@@ -46,12 +45,12 @@ class Caret {
 public:
 	Caret(HDC _hdc) : hdc(_hdc) { };
 	HDC hdc;
-	void Update(std::vector<std::vector<std::string> >&  text, std::string str, int _index);
+	void Update(std::vector<std::vector<std::string> >&  text, std::string str, int _index, int  pindex_y, HWND hWnd);
 };
 
 class _MsgQue {
 public:
-	_MsgQue() : len(0), init(false), str(NULL) {}
+	_MsgQue() : len(0), inited(false), str(NULL) {}
 	void SetData(const char* str, int size);
 	void Releas();
 
@@ -63,7 +62,7 @@ public:
 
 	int len;
 	wchar_t* str;
-	bool init;
+	bool inited;
 };
 
 static HWND g_hWnd = NULL;
@@ -71,6 +70,7 @@ static HINSTANCE g_hInst;
 
 static std::vector<std::vector<std::string> > str(50);
 static PAINTSTRUCT ps;
+static int index_y;
 static int index;
 static int height;
 static int width;

@@ -34,7 +34,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 		ShowCaret(hWnd);
 		AllocConsole();
 		freopen("CONOUT$", "wb", stdout);
-		//CurrentLocation = "C:\\";
+		CurrentLocation = "C:\\";
 		index = 0;
 		break;
 	}
@@ -43,11 +43,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 	{
 		if (wParam == VK_LEFT) {
 			index -= 1;
-			//std::cout << index << std::endl;
+			std::cout << index << std::endl;
 		}
 		if (wParam == VK_RIGHT) {
 			index += 1;
-			//std::cout << index << std::endl;
+			std::cout << index << std::endl;
 		}
 		InvalidateRect(hWnd, NULL, TRUE);
 		break;
@@ -59,16 +59,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			if (str.size() > 0 && index != 0) {
 				//Erase(index);
 				str[0].erase(str[0].begin() + index - 1, str[0].begin() + index);
-				for (int i = 0; i < str[0].size(); i++) {
-					std::cout << str[0][i];
-				}
+				//for (int i = 0; i < str[0].size(); i++) {
+				//	std::cout << str[0][i];
+				//}
 				index -= 1;
 			}
 			break;
-
 		}
 		if (wParam == VK_RETURN) {
 			Excute(str, CurrentLocation, hWnd);
+			index_y++;
 		}
 		else {
 			std::string s; s.push_back((char)wParam);
@@ -87,8 +87,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 	{
 		hdc = BeginPaint(hWnd, &ps);
 		AddTextQue(hdc, str, CurrentLocation);
-		TEXTOUT(hdc, hWnd);
-		cr.Update(str, CurrentLocation, index);
+		TEXTOUT(hdc, hWnd, index_y);
+		cr.Update(str, CurrentLocation, index, index_y, hWnd);
 		EndPaint(hWnd, &ps);
 		break;
 	}
