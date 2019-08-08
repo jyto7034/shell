@@ -26,7 +26,6 @@ void Caret::Update(std::vector<std::vector<std::string> >&  text, std::string Lo
 			SetCaretPos(size.cx, pindex_y * 16);
 		delete[] buf;
 	}
-	InvalidateRect(hWnd, NULL, TRUE);
 	return;
 }
 

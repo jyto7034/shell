@@ -49,7 +49,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			index += 1;
 			std::cout << index << std::endl;
 		}
-		InvalidateRect(hWnd, NULL, TRUE);
+		GetClientRect(g_hWnd, &WindowSize);
+		//ValidateRect(hWnd, &WindowSize);
+		std::cout << WindowSize.bottom << std::endl;
+		std::cout << WindowSize.left << std::endl;
+		std::cout << WindowSize.top << std::endl;
+		std::cout << WindowSize.right << std::endl;
+		//ValidateRect(hWnd, new RECT{ WindowSize.left, WindowSize.top / 2, WindowSize.right, WindowSize.bottom / 2 });
+		InvalidateRect(hWnd, new RECT{ WindowSize.left, WindowSize.top / 2, WindowSize.right, index_y + 1}, TRUE);
 		break;
 	}
 
@@ -57,11 +64,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 	{
 		if (wParam == VK_BACK) {
 			if (str.size() > 0 && index != 0) {
-				//Erase(index);
-				str[0].erase(str[0].begin() + index - 1, str[0].begin() + index);
+				str[	0].erase(str[0].begin() + index - 1, str[0].begin() + index);
+				#pragma region Debug
 				//for (int i = 0; i < str[0].size(); i++) {
 				//	std::cout << str[0][i];
 				//}
+#pragma endregion
 				index -= 1;
 			}
 			break;
@@ -74,12 +82,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			std::string s; s.push_back((char)wParam);
 			str[0].push_back(s);
 			index++;
+			#pragma region Debug
 			//for (int i = 0; i < str[0].size(); i++) {
 			//	std::cout << str[0][i];
 			//}
 			//std::cout << std::endl;
+#pragma endregion
 		}
-		InvalidateRect(hWnd, NULL, TRUE);
+		GetClientRect(g_hWnd, &WindowSize);
+		//ValidateRect(hWnd, &WindowSize);
+		std::cout << WindowSize.bottom << std::endl;
+		std::cout << WindowSize.left << std::endl;
+		std::cout << WindowSize.top << std::endl;
+		std::cout << WindowSize.right << std::endl;
+		//ValidateRect(hWnd, new RECT{ WindowSize.left, WindowSize.top / 2, WindowSize.right, WindowSize.bottom / 2 });
+		InvalidateRect(hWnd, new RECT{ WindowSize.left, WindowSize.top / 2, WindowSize.right, index_y + 1}, TRUE);
 		break;
 	}
 

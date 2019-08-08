@@ -83,3 +83,5 @@ static std::string cmd;
 
 static BOOL ToServer;
 static BOOL Remote;
+
+static RECT WindowSize;

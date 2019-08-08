@@ -1,4 +1,4 @@
 ﻿  Shell.cpp
-C:\Users\Administrator\Desktop\shell\Shell\Shell.cpp(36,1): warning C4996:  'freopen': This function or variable may be unsafe. Consider using freopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\Administrator\Desktop\Shell\Shell\Shell.cpp(36,1): warning C4996:  'freopen': This function or variable may be unsafe. Consider using freopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\ucrt\stdio.h(243): message :  'freopen' 선언을 참조하십시오.
-  Shell.vcxproj -> C:\Users\Administrator\Desktop\shell\x64\Debug\Shell.exe
+  Shell.vcxproj -> C:\Users\Administrator\Desktop\Shell\x64\Debug\Shell.exe
