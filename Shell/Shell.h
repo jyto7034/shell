@@ -77,7 +77,7 @@ static int width;
 static SIZE size;
 
 //static std::vector<_MsgQue> MsgQue;
-static _MsgQue MsgQue;
+static std::vector<_MsgQue> MsgQue;
 static std::string CurrentLocation = "C:\\";
 static std::string cmd;
 

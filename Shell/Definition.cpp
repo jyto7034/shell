@@ -63,7 +63,9 @@ void Excute(std::vector<std::vector<std::string> > text, std::string _CurrentLoc
 }
 
 void Cleanup() { 
-	MsgQue.Releas();
+	for (int i = 0; i < MsgQue.size(); i++) {
+		MsgQue[i].Releas();
+	}
 	return; 
 }
 
@@ -154,19 +156,15 @@ void AddTextQue(HDC hdc, std::vector<std::vector<std::string> >  text, std::stri
 	_str.insert(0, ">");
 	_str.insert(0, loc.c_str());
 
-	MsgQue.SetData(_str.c_str(), strlen(_str.c_str()));
+	_MsgQue temp;
+	temp.SetData(_str.c_str(), strlen(_str.c_str()));
+	MsgQue.push_back(temp);
 }
 
 void TEXTOUT(HDC hdc, HWND hWnd, int pIndex_y) {
-	if (MsgQue.len - (CurrentLocation.length()) == 1) {
-		wcscpy(MsgQue.str, L"");
-		wchar_t* buf;
-		convertor(buf, CurrentLocation.c_str());
-		TextOut(hdc, 0, pIndex_y * 16, buf, CurrentLocation.length());
-		delete[] buf;
+	for (int i = 0; i < MsgQue.size(); i++) {
+		TextOut(hdc, 0, ( i - index_y ) * 16, MsgQue[i].str, MsgQue[i].len);
 	}
-	else
-		TextOut(hdc, 0, pIndex_y * 16, MsgQue.str, MsgQue.len);
 }
 
 #pragma endregion

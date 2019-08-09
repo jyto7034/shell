@@ -51,12 +51,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 		}
 		GetClientRect(g_hWnd, &WindowSize);
 		//ValidateRect(hWnd, &WindowSize);
-		std::cout << WindowSize.bottom << std::endl;
-		std::cout << WindowSize.left << std::endl;
-		std::cout << WindowSize.top << std::endl;
-		std::cout << WindowSize.right << std::endl;
+		//std::cout << " KEYDOWN " <<WindowSize.bottom -  << std::endl;
 		//ValidateRect(hWnd, new RECT{ WindowSize.left, WindowSize.top / 2, WindowSize.right, WindowSize.bottom / 2 });
-		InvalidateRect(hWnd, new RECT{ WindowSize.left, WindowSize.top / 2, WindowSize.right, index_y + 1}, TRUE);
+		InvalidateRect(hWnd, NULL, TRUE);
 		break;
 	}
 
@@ -89,14 +86,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 			//std::cout << std::endl;
 #pragma endregion
 		}
-		GetClientRect(g_hWnd, &WindowSize);
-		//ValidateRect(hWnd, &WindowSize);
-		std::cout << WindowSize.bottom << std::endl;
-		std::cout << WindowSize.left << std::endl;
-		std::cout << WindowSize.top << std::endl;
-		std::cout << WindowSize.right << std::endl;
-		//ValidateRect(hWnd, new RECT{ WindowSize.left, WindowSize.top / 2, WindowSize.right, WindowSize.bottom / 2 });
-		InvalidateRect(hWnd, new RECT{ WindowSize.left, WindowSize.top / 2, WindowSize.right, index_y + 1}, TRUE);
+		InvalidateRect(hWnd, NULL, TRUE);
 		break;
 	}
 
